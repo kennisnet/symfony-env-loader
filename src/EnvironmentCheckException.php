@@ -1,11 +1,5 @@
 <?php
 
-/*
- * This file is part of Wikiwijs Maken.
- * Maintained by Kennisnet and published under the GNU licence.
- * See the LICENCE.md file for more information.
- */
-
 namespace Kennisnet\Env;
 
 use Exception;
