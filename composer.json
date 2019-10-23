@@ -1,0 +1,15 @@
+{
+  "name": "kennisnet/symfony-env-loader",
+  "description": "Loads the envs variables tier based",
+  "homepage": "https://github.com/kennisnet/symfony-env-loader",
+  "license": "MIT",
+    "require": {
+    "php": "^7.0"
+  },
+  "version": "1.0.0",
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  }
+}
