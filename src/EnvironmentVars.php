@@ -2,7 +2,7 @@
 
 namespace Kennisnet\Env;
 
-use Env\Annotation\SecretValue;
+use Kennisnet\Env\Annotation\SecretValue;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;

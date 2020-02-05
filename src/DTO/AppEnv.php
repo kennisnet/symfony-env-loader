@@ -1,8 +1,8 @@
 <?php
 
-namespace Kennisnet\DTO;
+namespace Kennisnet\Env\DTO;
 
-use Env\Annotation\SecretValue;
+use Kennisnet\Env\Annotation\SecretValue;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
