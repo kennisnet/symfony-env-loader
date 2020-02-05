@@ -2,7 +2,7 @@
 
 namespace Kennisnet\Env\Cache;
 
-use Env\EnvironmentVars;
+use Kennisnet\Env\EnvironmentVars;
 use Exception;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
