@@ -41,19 +41,24 @@ class AppEnv
     /**
      * @SecretValue()
      * @Assert\NotBlank()
-     * @Assert\Callback({"\App\Dto\AppEnv","UrlValidator"})
      * @var string
      */
     public $DATABASE_URL;
 
-    public static function UrlValidator($url, ExecutionContextInterface $context, $payload)
+    /**
+     * @Assert\Callback
+     * @param ExecutionContextInterface $context
+     */
+    public function UrlValidator(ExecutionContextInterface $context)
     {
-        if (strpos($url, '//') === 0) {
-            $url = 'https:' . $url;
+        $databaseUrl = $this->DATABASE_URL;
+
+        if (strpos($databaseUrl, '//') === 0) {
+            $databaseUrl = 'https:' . $databaseUrl;
         }
 
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            $context->addViolation('URL is invalid');
+        if (!filter_var($databaseUrl, FILTER_VALIDATE_URL)) {
+            $context->addViolation('Database URL is invalid');
         }
     }
 }
