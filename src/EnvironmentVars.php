@@ -90,7 +90,7 @@ class EnvironmentVars
 
     /**
      * @param ValidatorInterface $validator
-     * @param array $onlyVarsToCheck
+     * @param array $whitelist
      *
      * @return CheckReport
      *
@@ -98,7 +98,7 @@ class EnvironmentVars
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
-    public static function checkAppEnv(ValidatorInterface $validator, $onlyVarsToCheck = [])
+    public static function checkAppEnv(ValidatorInterface $validator, $whitelist = [])
     {
         if (!isset($_SERVER['SYMFONY_DOTENV_VARS'])) {
             throw EnvironmentCheckException::noSymfonyEnvVariablesAvailable();
@@ -143,7 +143,7 @@ class EnvironmentVars
 
             foreach ($checkReport->diff as $item => $value) {
                 //skip item check if array is not empty and item is not in array
-                if (!empty($onlyVarsToCheck) && !in_array($item, $onlyVarsToCheck)) {
+                if (!empty($whitelist) && !in_array($item, $whitelist)) {
                     continue;
                 }
 
