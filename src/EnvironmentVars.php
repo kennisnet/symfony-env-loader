@@ -90,6 +90,7 @@ class EnvironmentVars
 
     /**
      * @param ValidatorInterface $validator
+     * @param array $onlyVarsToCheck
      *
      * @return CheckReport
      *
@@ -97,7 +98,7 @@ class EnvironmentVars
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
-    public static function checkAppEnv(ValidatorInterface $validator)
+    public static function checkAppEnv(ValidatorInterface $validator, $onlyVarsToCheck = [])
     {
         if (!isset($_SERVER['SYMFONY_DOTENV_VARS'])) {
             throw EnvironmentCheckException::noSymfonyEnvVariablesAvailable();
@@ -141,6 +142,11 @@ class EnvironmentVars
             $checkReport->diff = array_diff_assoc($envFileData, $envValues);
 
             foreach ($checkReport->diff as $item => $value) {
+                //skip item check if array is not empty and item is not in array
+                if (!empty($onlyVarsToCheck) && !in_array($item, $onlyVarsToCheck)) {
+                    continue;
+                }
+
                 // Check if item / property is a marked as secret value
                 if (!SecretValue::hasAnnotation(self::$appEnvClassName, $item)) {
                     $checkReport->errors->add(
