@@ -3,9 +3,11 @@
 namespace Kennisnet\Env;
 
 use Kennisnet\Env\Annotation\SecretValue;
+use LogicException;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use throwable;
 
 class EnvironmentVars
 {
@@ -26,12 +28,9 @@ class EnvironmentVars
 
     public function __construct()
     {
-        throw new \LogicException(__CLASS__ . ' Can only be used as static');
+        throw new LogicException(__CLASS__ . ' Can only be used as static');
     }
 
-    /**
-     * @return mixed
-     */
     public static function setAppEnvClassName($dtoClassName)
     {
         self::$appEnvClassName = $dtoClassName;
@@ -132,7 +131,7 @@ class EnvironmentVars
         try {
             $checkReport->errors = $validator->validate($appEnv);
             $checkReport->valid  = $checkReport->errors->count() < 1;
-        } catch (\throwable $validationException) {
+        } catch (throwable $validationException) {
             $checkReport->valid = false;
         }
 
@@ -144,6 +143,7 @@ class EnvironmentVars
             foreach ($checkReport->diff as $item => $value) {
                 //skip item check if array is not empty and item is not in array
                 if (!empty($whitelist) && !in_array($item, $whitelist)) {
+                    $checkReport->diff[$item] = '**Whitelisted**';
                     continue;
                 }
 
@@ -152,9 +152,9 @@ class EnvironmentVars
                     $checkReport->errors->add(
                         new ConstraintViolation(
                             'Env mismatch for field: ' . $item .
-                            ' Repo value = ' . $envFileData[$item] .
+                            ' Repo value = ' . $envValues[$item] .
                             ' <> ' .
-                            ' System value = ' . $envValues[$item] ?? '',
+                            ' Overwritten with = ' . $envFileData[$item] ?? '',
                             '',
                             [], null, '', $envValues[$item]
                         )

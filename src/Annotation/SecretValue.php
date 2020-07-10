@@ -4,6 +4,7 @@ namespace Kennisnet\Env\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\AnnotationReader;
+use ReflectionException;
 use ReflectionProperty;
 
 /**
@@ -19,18 +20,22 @@ class SecretValue extends Annotation
      *
      * @return bool
      * @throws \Doctrine\Common\Annotations\AnnotationException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function hasAnnotation($class, $property)
     {
-        $annotationReader   = new AnnotationReader();
-        $reflectionProperty = new ReflectionProperty($class, $property);
-        $annotations        = array_filter(
-            $annotationReader->getPropertyAnnotations($reflectionProperty),
-            function ($annotation) {
-                return $annotation instanceof SecretValue;
-            });
+        try {
+            $annotationReader   = new AnnotationReader();
+            $reflectionProperty = new ReflectionProperty($class, $property);
+            $annotations        = array_filter(
+                $annotationReader->getPropertyAnnotations($reflectionProperty),
+                function ($annotation) {
+                    return $annotation instanceof SecretValue;
+                });
 
-        return !empty($annotations);
+            return !empty($annotations);
+        } catch (ReflectionException $reflectionException){
+            return false;
+        }
     }
 }
