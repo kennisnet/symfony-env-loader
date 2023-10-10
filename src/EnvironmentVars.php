@@ -39,7 +39,9 @@ class EnvironmentVars
     public static function loadLocalEnvFile($basePath)
     {
         $dotEnv = new Dotenv(true);
-        if (is_file($basePath . '/.env.local')) {
+        if ($environmentVariable = getenv('APP_ENV')) {
+            self::$appEnvName = $environmentVariable;
+        } else if (is_file($basePath . '/.env.local')) {
             self::$localEnvFile = $basePath . '/.env.local';
             $dotEnv->load($basePath . '/.env.local');
             self::$appEnvName = getenv('APP_ENV');
@@ -53,7 +55,7 @@ class EnvironmentVars
                 self::$appEnvName = $values['APP_ENV'];
             }
         } else {
-            self::$appEnvName = getenv('APP_ENV'); // it needs to be available from the system env
+            self::$appEnvName = 'dev';
         }
     }
 
