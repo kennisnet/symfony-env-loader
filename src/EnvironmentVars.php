@@ -24,7 +24,7 @@ class EnvironmentVars
 
     public static  $appEnv;
 
-    private static $appEnvName;
+    private static $appEnvName = null;
 
     private static $envOverwrite = false;
 
@@ -54,14 +54,15 @@ class EnvironmentVars
             }
 
         } elseif (self::$secretsEnvFile && file_exists(self::$secretsEnvFile)) {
-
             // File local file does not exits, but the .envs file does. Use this file as initial APP_ENV
             // This resolve the missing APP_ENV in an later stage of the envLoad
             $values = $dotEnv->parse(file_get_contents(self::$secretsEnvFile));
             if (isset($values['APP_ENV'])) {
                 self::$appEnvName = $values['APP_ENV'];
             }
-        } else {
+        }
+
+        if (self::$appEnvName === null) {
             self::$appEnvName = 'dev';
         }
     }
