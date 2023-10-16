@@ -26,6 +26,8 @@ class EnvironmentVars
 
     private static $appEnvName;
 
+    private static $envOverwrite = false;
+
     public function __construct()
     {
         throw new LogicException(__CLASS__ . ' Can only be used as static');
@@ -40,11 +42,16 @@ class EnvironmentVars
     {
         $dotEnv = new Dotenv(true);
         if ($environmentVariable = getenv('APP_ENV')) {
+            self::$envOverwrite = true;
             self::$appEnvName = $environmentVariable;
-        } else if (is_file($basePath . '/.env.local')) {
+        }
+
+        if (is_file($basePath . '/.env.local')) {
             self::$localEnvFile = $basePath . '/.env.local';
             $dotEnv->load($basePath . '/.env.local');
-            self::$appEnvName = getenv('APP_ENV');
+            if (!self::$envOverwrite) {
+                self::$appEnvName = getenv('APP_ENV');
+            }
 
         } elseif (self::$secretsEnvFile && file_exists(self::$secretsEnvFile)) {
 
@@ -73,8 +80,14 @@ class EnvironmentVars
         self::loadLocalEnvFile($basePath);
 
         if (empty($files)) {
-            $files = [$basePath . '/.env', $basePath . '/.env.' . self::$appEnvName ?? 'dev'];
+            $files = [$basePath . '/.env'];
         }
+
+        //when not overwriting, use default order
+        if(!self::$envOverwrite) {
+            $files[] = $basePath . '/.env.' . self::$appEnvName;
+        }
+
         $dotEnv = new Dotenv(true);
         // Check if local env file exist, and exclude the local env file from the test environment only load the .env.test
         if (self::$localEnvFile && !in_array(self::$localEnvFile, $files) && getenv('APP_ENV') !== 'test') {
@@ -82,6 +95,11 @@ class EnvironmentVars
         }
         if (self::$secretsEnvFile && !in_array(self::$secretsEnvFile, $files)) {
             $files[] = self::$secretsEnvFile;
+        }
+
+        //when overwriting, always put the env.{env} last
+        if (self::$envOverwrite) {
+            $files[] = $basePath . '/.env.' . self::$appEnvName;
         }
 
         self::$usedEnvFiles = $files;
