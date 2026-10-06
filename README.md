@@ -46,5 +46,10 @@ use Kennisnet\Env\Annotation\SecretValue;
 public $DATABASE_URL;
 ```
 
-`SecretValue::hasAnnotation()` is replaced by `SecretValue::isSetOn()`. Validate your `AppEnv` with attribute mapping
-enabled on the validator (Symfony 5.4+: `enableAttributeMapping()`, or the framework default).
+`SecretValue::hasAnnotation()` is replaced by `SecretValue::isSetOn()`.
+
+Validate your `AppEnv` with a validator that reads constraints from attributes. Inside a Symfony application the
+framework's validator already does. A standalone `ValidatorBuilder` needs:
+
+- Symfony 6.4+: `$builder->enableAttributeMapping();`
+- Symfony 5.4: `$builder->enableAnnotationMapping(true);` (`true` skips the Doctrine annotation reader, attributes are still read)

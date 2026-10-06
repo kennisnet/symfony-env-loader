@@ -35,7 +35,11 @@ $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = (int)$_SERVER['APP_DEBUG'] || filte
                                                                                       FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
 
 $builder = new ValidatorBuilder();
-$builder->enableAttributeMapping();
+// Read the constraints from PHP attributes: Symfony 6.4+ has enableAttributeMapping(); on 5.4 the same is
+// enableAnnotationMapping(true), where `true` skips the Doctrine annotation reader.
+method_exists($builder, 'enableAttributeMapping')
+    ? $builder->enableAttributeMapping()
+    : $builder->enableAnnotationMapping(true);
 
 $checkReport = EnvironmentVars::checkAppEnv($builder->getValidator());
 echo  $checkReport;
