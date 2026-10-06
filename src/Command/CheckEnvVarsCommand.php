@@ -32,7 +32,6 @@ class CheckEnvVarsCommand extends Command implements ContainerAwareInterface
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void|null
-     * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \Kennisnet\Env\EnvironmentCheckException
      * @throws \ReflectionException
      */

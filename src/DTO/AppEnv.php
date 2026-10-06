@@ -9,10 +9,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class AppEnv
 {
     /**
-     *
-     * @Assert\NotBlank()
      * @var string
      */
+    #[Assert\NotBlank]
     public $APP_ENV;
 
     /**
@@ -26,29 +25,29 @@ class AppEnv
     public $DEV_UUID;
 
     /**
-     * @SecretValue()
-     * @Assert\NotBlank()
      * @var string
      */
+    #[SecretValue]
+    #[Assert\NotBlank]
     public $APP_SECRET;
 
     /**
-     * @Assert\NotBlank()
      * @var string
      */
+    #[Assert\NotBlank]
     public $PROXY_URL;
 
     /**
-     * @SecretValue()
-     * @Assert\NotBlank()
      * @var string
      */
+    #[SecretValue]
+    #[Assert\NotBlank]
     public $DATABASE_URL;
 
     /**
-     * @Assert\Callback
      * @param ExecutionContextInterface $context
      */
+    #[Assert\Callback]
     public function UrlValidator(ExecutionContextInterface $context)
     {
         $databaseUrl = $this->DATABASE_URL;
