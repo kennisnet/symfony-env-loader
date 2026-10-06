@@ -33,3 +33,18 @@ Here is a example:
 public/index.php
 `require dirname(__DIR__).'/config/bootstrap.php';`
 
+
+## Upgrading to 2.0
+
+2.0 drops the `doctrine/annotations` dependency: `SecretValue` is now a PHP attribute (PHP 8.1+).
+In your `AppEnv` DTO replace the docblock annotation with the attribute; the import stays the same:
+
+```php
+use Kennisnet\Env\Annotation\SecretValue;
+
+#[SecretValue]
+public $DATABASE_URL;
+```
+
+`SecretValue::hasAnnotation()` is replaced by `SecretValue::isSetOn()`. Validate your `AppEnv` with attribute mapping
+enabled on the validator (Symfony 5.4+: `enableAttributeMapping()`, or the framework default).

@@ -2,40 +2,25 @@
 
 namespace Kennisnet\Env\Annotation;
 
-use Doctrine\Common\Annotations\Annotation;
-use Doctrine\Common\Annotations\AnnotationReader;
-use ReflectionException;
+use Attribute;
 use ReflectionProperty;
 
 /**
- * Class SecretValue.
+ * Marks an AppEnv property as secret: its value is masked in the env check report instead of being
+ * reported as a mismatch.
  *
- * @Annotation
+ *     #[SecretValue]
+ *     public $DATABASE_URL;
  */
-class SecretValue extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class SecretValue
 {
-    /**
-     * @param $class
-     * @param $property
-     *
-     * @return bool
-     * @throws \Doctrine\Common\Annotations\AnnotationException
-     * @throws ReflectionException
-     */
-    public static function hasAnnotation($class, $property)
+    public static function isSetOn(string $class, string $property): bool
     {
-        try {
-            $annotationReader   = new AnnotationReader();
-            $reflectionProperty = new ReflectionProperty($class, $property);
-            $annotations        = array_filter(
-                $annotationReader->getPropertyAnnotations($reflectionProperty),
-                function ($annotation) {
-                    return $annotation instanceof SecretValue;
-                });
-
-            return !empty($annotations);
-        } catch (ReflectionException $reflectionException){
+        if (!property_exists($class, $property)) {
             return false;
         }
+
+        return (new ReflectionProperty($class, $property))->getAttributes(self::class) !== [];
     }
 }
