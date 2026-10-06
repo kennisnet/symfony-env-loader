@@ -16,9 +16,9 @@ class AppEnv {
     public $APP_DEBUG;
 
     /**
-     * @Assert\NotBlank()
      * @var string
      */
+    #[Assert\NotBlank]
     public $APP_TEST;
 }
 
@@ -35,7 +35,7 @@ $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = (int)$_SERVER['APP_DEBUG'] || filte
                                                                                       FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
 
 $builder = new ValidatorBuilder();
-$builder->enableAnnotationMapping();
+$builder->enableAttributeMapping();
 
 $checkReport = EnvironmentVars::checkAppEnv($builder->getValidator());
 echo  $checkReport;

@@ -115,7 +115,6 @@ class EnvironmentVars
      * @return CheckReport
      *
      * @throws EnvironmentCheckException
-     * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
     public static function checkAppEnv(ValidatorInterface $validator, $whitelist = [])
@@ -169,7 +168,7 @@ class EnvironmentVars
                 }
 
                 // Check if item / property is a marked as secret value
-                if (!SecretValue::hasAnnotation(self::$appEnvClassName, $item)) {
+                if (!SecretValue::isSetOn(self::$appEnvClassName, $item)) {
                     $checkReport->errors->add(
                         new ConstraintViolation(
                             'Env mismatch for field: ' . $item .
